@@ -10,8 +10,5 @@
 |--|--|--|--|--|
 |API Integration(Retrofit)|Jetpack Navigation|Coroutines|Dagger Hilt|Image Loading through Coil|
 
-<details><summary><h3> Demo Video 📺  </h3></summary>
+- [Demo Video](https://drive.google.com/file/d/1hOR-lWCh1kQecg-idVSEL3y2IEciUIAq/view?usp=sharing) 📺 
 
-https://github.com/user-attachments/assets/f06f2a8e-cad1-4095-a3e1-728493ed56a4
-
-</details>

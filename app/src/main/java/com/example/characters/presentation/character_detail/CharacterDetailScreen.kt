@@ -73,7 +73,8 @@ fun MealDetailScreenUIPreview() {
             gender = "Male",
             id = 1,
             image = "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
-            name = "Rick Sanchez"
+            name = "Rick Sanchez",
+            species = "Human"
         )
     )
 }

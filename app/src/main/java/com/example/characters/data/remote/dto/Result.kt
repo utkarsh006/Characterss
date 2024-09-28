@@ -23,6 +23,7 @@ fun ResultDTO.toCharacter(): CharacterDisplay {
         gender = gender,
         id = id,
         image = image,
-        name = name
+        name = name,
+        species = species
     )
 }

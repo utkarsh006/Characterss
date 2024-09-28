@@ -12,6 +12,12 @@ import javax.inject.Inject
 class GetCharactersUseCase @Inject constructor(
     private val repository: CharacterRepository,
 ) {
+    private var characterName: String ?= null
+
+    fun setCityName(_characterName: String){
+        this.characterName = _characterName
+    }
+
     operator fun invoke(): Flow<Resource<List<CharacterDisplay>>> = flow {
         try {
             emit(Resource.Loading())

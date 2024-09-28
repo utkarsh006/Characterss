@@ -8,9 +8,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.characters.common.Resource
+import com.example.characters.domain.model.CharacterDisplay
 import com.example.characters.domain.usecases.GetCharactersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -31,13 +35,22 @@ class CharacterListViewModel @Inject constructor(
     private val _isRetrying = mutableStateOf(false)
     val isRetrying: State<Boolean> get() = _isRetrying
 
+    private val _searchText = MutableStateFlow("")
+    val searchText = _searchText.asStateFlow()
+
+    private val _isSearching = MutableStateFlow(false)
+    val isSearching = _isSearching.asStateFlow()
+
+    private var searchJob: Job? = null
+    private var lastSearchedCharacterName: String = ""
+
     init {
         checkNetworkAndLoadData()
     }
 
     private fun checkNetworkAndLoadData() {
         if (hasNetwork(application)) {
-            getCharacters()
+            getCharacters(lastSearchedCharacterName)
         } else {
             _hasNetwork.value = false
         }
@@ -50,21 +63,44 @@ class CharacterListViewModel @Inject constructor(
             delay(1000) // Simulating a delay for network request
             _hasNetwork.value = hasNetwork(application)
             if (_hasNetwork.value) {
-                getCharacters()
+                getCharacters(lastSearchedCharacterName)
             }
             _isRetrying.value = false
         }
     }
 
-    private fun getCharacters() {
+    private fun getCharacters(characterName: String) {
+        // Cancel the previous search job to avoid unnecessary API calls
+        searchJob?.cancel()
+
+        if (characterName.isNotEmpty()) {
+            lastSearchedCharacterName = characterName  // Store the last searched character name
+            // Delay the API call using debounce (e.g., 200 milliseconds)
+            searchJob = viewModelScope.launch {
+                delay(200)
+                performSearch(characterName)
+            }
+        } else {
+            // Handle the case when the search query is empty
+            _state.value = CharacterListState(characters = emptyList())
+        }
+    }
+
+    private fun performSearch(characterName: String) {
+        if (characterName.isNotEmpty()) {
+            getCharactersUseCase.setCityName(characterName)
+        }
+
         getCharactersUseCase().onEach { result ->
             when (result) {
                 is Resource.Success -> {
-                    _state.value = CharacterListState(meals = result.data ?: emptyList())
+                    _state.value = CharacterListState(characters = result.data ?: emptyList())
                 }
+
                 is Resource.Error -> {
                     _state.value = CharacterListState(error = result.message ?: "Unexpected Error")
                 }
+
                 is Resource.Loading -> {
                     _state.value = CharacterListState(isLoading = true)
                 }
@@ -73,8 +109,32 @@ class CharacterListViewModel @Inject constructor(
     }
 
     private fun hasNetwork(context: Context): Boolean {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = connectivityManager.activeNetworkInfo
         return activeNetwork?.isConnectedOrConnecting == true
+    }
+
+    // This fn will be called from UI if user types something
+    fun onSearchTextChange(text: String) {
+        _searchText.value = text
+
+        if (text.isEmpty()) {
+            lastSearchedCharacterName = ""  // Clear the last searched name
+            _state.value = CharacterListState(characters = listOf())
+        } else {
+            getCharacters(text)
+        }
+    }
+
+    fun searchCharacter(characterList: List<CharacterDisplay>): List<CharacterDisplay> {
+        val list = if (searchText.value.isEmpty()) {
+            characterList
+        } else {
+            characterList.filter {
+                it.doesMatchSearchQuery(searchText.value)
+            }
+        }
+        return list
     }
 }

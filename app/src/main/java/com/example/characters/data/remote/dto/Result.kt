@@ -24,6 +24,8 @@ fun ResultDTO.toCharacter(): CharacterDisplay {
         id = id,
         image = image,
         name = name,
-        species = species
+        species = species,
+        location = location,
+        status = status,
     )
 }

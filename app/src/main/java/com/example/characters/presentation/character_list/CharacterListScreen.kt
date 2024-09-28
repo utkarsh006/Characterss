@@ -28,9 +28,12 @@ fun CharacterListScreen(
     val isRetrying = viewModel.isRetrying.value
     val searchText by viewModel.searchText.collectAsState()
 
-    // Compute filtered characters within the Composable context
-    val filteredCharacters = remember(state.characters, searchText) {
-        viewModel.searchCharacter(state.characters)
+    val displayedCharacters = remember(state.characters, searchText) {
+        if (searchText.isBlank()) {
+            state.characters
+        } else {
+            viewModel.searchCharacter(state.characters)
+        }
     }
 
     if (hasNetwork) {
@@ -45,7 +48,7 @@ fun CharacterListScreen(
 
             // LazyColumn for character list
             LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(filteredCharacters) { particularCharacter ->
+                items(displayedCharacters) { particularCharacter ->
                     CharacterListItem(
                         character = particularCharacter,
                         onItemClicked = {

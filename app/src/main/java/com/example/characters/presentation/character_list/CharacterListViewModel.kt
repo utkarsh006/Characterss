@@ -58,9 +58,8 @@ class CharacterListViewModel @Inject constructor(
 
     fun retry() {
         _isRetrying.value = true
-        // Simulate network check and data loading
         viewModelScope.launch {
-            delay(1000) // Simulating a delay for network request
+            delay(1000)
             _hasNetwork.value = hasNetwork(application)
             if (_hasNetwork.value) {
                 getCharacters(lastSearchedCharacterName)
@@ -75,14 +74,33 @@ class CharacterListViewModel @Inject constructor(
 
         if (characterName.isNotEmpty()) {
             lastSearchedCharacterName = characterName  // Store the last searched character name
-            // Delay the API call using debounce (e.g., 200 milliseconds)
+            // Delay the API call using debounce
             searchJob = viewModelScope.launch {
                 delay(200)
                 performSearch(characterName)
             }
         } else {
-            // Handle the case when the search query is empty
-            _state.value = CharacterListState(characters = emptyList())
+            // Load all characters if characterName is empty
+            loadAllCharacters()
+        }
+    }
+
+    private fun loadAllCharacters() {
+        // Fetch all characters and update the state
+        viewModelScope.launch {
+            getCharactersUseCase().onEach { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        _state.value = CharacterListState(characters = result.data ?: emptyList())
+                    }
+                    is Resource.Error -> {
+                        _state.value = CharacterListState(error = result.message ?: "Unexpected Error")
+                    }
+                    is Resource.Loading -> {
+                        _state.value = CharacterListState(isLoading = true)
+                    }
+                }
+            }.launchIn(this)
         }
     }
 
@@ -96,11 +114,9 @@ class CharacterListViewModel @Inject constructor(
                 is Resource.Success -> {
                     _state.value = CharacterListState(characters = result.data ?: emptyList())
                 }
-
                 is Resource.Error -> {
                     _state.value = CharacterListState(error = result.message ?: "Unexpected Error")
                 }
-
                 is Resource.Loading -> {
                     _state.value = CharacterListState(isLoading = true)
                 }
@@ -115,26 +131,24 @@ class CharacterListViewModel @Inject constructor(
         return activeNetwork?.isConnectedOrConnecting == true
     }
 
-    // This fn will be called from UI if user types something
     fun onSearchTextChange(text: String) {
         _searchText.value = text
 
         if (text.isEmpty()) {
             lastSearchedCharacterName = ""  // Clear the last searched name
-            _state.value = CharacterListState(characters = listOf())
+            loadAllCharacters() // Load the full character list when the search is cleared
         } else {
             getCharacters(text)
         }
     }
 
     fun searchCharacter(characterList: List<CharacterDisplay>): List<CharacterDisplay> {
-        val list = if (searchText.value.isEmpty()) {
-            characterList
+        return if (searchText.value.isEmpty()) {
+            characterList // Return the full list when search text is empty
         } else {
             characterList.filter {
-                it.doesMatchSearchQuery(searchText.value)
+                it.doesMatchSearchQuery(searchText.value) // Filter based on search query
             }
         }
-        return list
     }
 }

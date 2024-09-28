@@ -1,10 +1,14 @@
 package com.example.characters.domain.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.example.characters.data.remote.dto.Location
 
+@Entity
 data class CharacterDisplay(
     val created: String,
     val gender: String,
+    @PrimaryKey
     val id: Int,
     val image: String,
     val name: String,

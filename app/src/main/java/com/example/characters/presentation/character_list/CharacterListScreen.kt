@@ -56,8 +56,7 @@ fun CharacterListScreen(
                             navController.navigate(
                                 Screen.CharacterDetailScreen.route + "?id=$navMapper"
                             )
-                        },
-                        onSaveClicked = {}
+                        }
                     )
                 }
 

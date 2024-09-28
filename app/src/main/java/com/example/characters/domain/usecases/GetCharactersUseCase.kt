@@ -10,7 +10,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 class GetCharactersUseCase @Inject constructor(
-    private val repository: CharacterRepository,
+    private val repository: CharacterRepository
 ) {
     private var characterName: String ?= null
 

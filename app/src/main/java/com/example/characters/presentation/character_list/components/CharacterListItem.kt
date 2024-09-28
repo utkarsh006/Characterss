@@ -2,31 +2,42 @@ package com.example.characters.presentation.character_list.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.characters.domain.model.CharacterDisplay
+import com.example.characters.presentation.character_list.CharacterListViewModel
 
 @Composable
 fun CharacterListItem(
     character: CharacterDisplay,
     onItemClicked: (CharacterDisplay) -> Unit,
-    onSaveClicked: (CharacterDisplay) -> Unit,
+    viewModel: CharacterListViewModel = hiltViewModel()
 ) {
     Card(
         modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth()
             .clickable { onItemClicked(character) },
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 4.dp
-        )
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
             modifier = Modifier
@@ -60,7 +71,9 @@ fun CharacterListItem(
                         modifier = Modifier.align(CenterVertically)
                     )
 
-                    IconButton(onClick = { onSaveClicked(character) }) {
+                    IconButton(onClick = {
+                        viewModel.saveCharacter(character)
+                    }) {
                         Icon(
                             imageVector = Icons.Default.FavoriteBorder,
                             contentDescription = "Save"

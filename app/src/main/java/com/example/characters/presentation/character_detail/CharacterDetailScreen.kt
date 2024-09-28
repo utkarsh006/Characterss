@@ -18,7 +18,7 @@ fun CharacterDetailScreen(
     character: CharacterDisplay
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
-        CharacterListItem(character = character, onItemClicked = {}, onSaveClicked = {})
+        CharacterListItem(character = character, onItemClicked = {}, )
 
         Spacer(Modifier.height(4.dp))
 

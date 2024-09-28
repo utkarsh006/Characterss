@@ -1,10 +1,16 @@
 package com.example.characters.di
 
+import android.app.Application
+import androidx.room.Room
 import com.example.characters.common.Constants
+import com.example.characters.data.local.CharacterDB
 import com.example.characters.data.remote.CharacterApi
 import com.example.characters.data.repository.CharacterRepoImpl
+import com.example.characters.data.repository.DbRepoImpl
 import com.example.characters.domain.repository.CharacterRepository
+import com.example.characters.domain.repository.DbRepository
 import com.example.characters.domain.usecases.GetCharactersUseCase
+import com.example.characters.domain.usecases.SaveCharacter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,7 +33,6 @@ object AppModule {
             .create(CharacterApi::class.java)
     }
 
-    //This function we would provide to our repository
     @Provides
     @Singleton
     fun provideCharacterRepository(characterApi: CharacterApi): CharacterRepository {
@@ -36,7 +41,29 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideDbRepository(db: CharacterDB): DbRepository {
+        return DbRepoImpl(db.characterDao)
+    }
+
+    @Provides
+    @Singleton
     fun provideCharacterUseCase(characterRepo: CharacterRepository): GetCharactersUseCase {
         return GetCharactersUseCase(characterRepo)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSaveCharacterUseCase(dbRepository: DbRepository): SaveCharacter {
+        return SaveCharacter(dbRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCharacterDatabase(app: Application): CharacterDB {
+        return Room.databaseBuilder(
+            app,
+            CharacterDB::class.java,
+            CharacterDB.DB_NAME
+        ).build()
     }
 }

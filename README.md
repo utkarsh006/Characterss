@@ -8,9 +8,14 @@
 
 ### Concepts Used 
 
-||||||
-|--|--|--|--|--|
-|API Integration(Retrofit)|Jetpack Navigation|Coroutines|Dagger Hilt|Image Loading through Coil|
+|||||||
+|--|--|--|--|--|--|
+|API Integration(Retrofit)|Jetpack Navigation|Coroutines & Flows|Dagger Hilt|Image Loading through Coil|RoomDB|
 
-- [Demo Video](https://drive.google.com/file/d/1hOR-lWCh1kQecg-idVSEL3y2IEciUIAq/view?usp=sharing) 📺 
+<details><summary><h3>Demo Video 📺 </h3></summary>
+
+https://github.com/user-attachments/assets/3b8fdaf1-9781-4d21-add0-5da803117931
+
+</details>
+
 

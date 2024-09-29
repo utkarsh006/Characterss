@@ -44,9 +44,8 @@ fun CharacterListScreen(
                 onSearchTextChange = { viewModel.onSearchTextChange(it) }
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-            // LazyColumn for character list
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(displayedCharacters) { particularCharacter ->
                     CharacterListItem(

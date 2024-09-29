@@ -10,12 +10,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.crypto.R
 
@@ -31,12 +32,19 @@ fun NoInternet(isRetrying: Boolean, onRetry: () -> Unit) {
         Image(
             painter = painterResource(id = R.drawable.ic_no_internet),
             contentDescription = "No Internet Connection !!",
-            modifier = Modifier.size(120.dp)
+            modifier = Modifier.size(200.dp)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(text = "No Internet Connection !!", style = MaterialTheme.typography.bodyMedium)
+        TextComponent(
+            text = "No Internet Connection !!",
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 14f,
+            color = Color.Black,
+            padding = 8.dp
+        )
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(

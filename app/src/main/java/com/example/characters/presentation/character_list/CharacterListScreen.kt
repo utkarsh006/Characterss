@@ -12,7 +12,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.characters.presentation.Screen
+import com.example.characters.navigation.Screen
 import com.example.characters.presentation.character_list.components.CharacterListItem
 import com.example.characters.presentation.character_list.components.NoInternet
 import com.example.characters.presentation.character_list.components.SearchComponent

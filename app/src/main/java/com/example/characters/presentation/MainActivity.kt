@@ -6,7 +6,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
@@ -15,6 +18,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.characters.domain.model.CharacterDisplay
+import com.example.characters.navigation.BottomNavigationBar
+import com.example.characters.navigation.Screen
 import com.example.characters.presentation.character_detail.CharacterDetailScreen
 import com.example.characters.presentation.character_list.CharacterListScreen
 import com.example.characters.presentation.ui.MealTheme
@@ -33,26 +38,54 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(
-                        navController = navController,
-                        startDestination = Screen.CharacterListScreen.route
-                    ) {
-                        composable(
-                            route = Screen.CharacterListScreen.route
-                        ) {
-                            CharacterListScreen(navController)
-                        }
+                    val items = listOf(
+                        Screen.CharacterListScreen,
+                        Screen.FavoritesScreen // Add Favorites Screen
+                    )
 
-                        composable(
-                            route = Screen.CharacterDetailScreen.route + "?id={id}",
-                            arguments = listOf(
-                                navArgument("id") {
-                                    type = NavType.StringType
+                    Scaffold(
+                        bottomBar = {
+                            BottomNavigationBar(
+                                items = items,
+                                navController = navController,
+                                onItemClick = {
+                                    navController.navigate(it.route) {
+                                        // Ensures the user doesn't add duplicate destinations to the stack
+                                        popUpTo(navController.graph.startDestinationId)
+                                        launchSingleTop = true
+                                    }
                                 }
                             )
+                        }
+                    ) {
+                        NavHost(
+                            navController = navController,
+                            startDestination = Screen.CharacterListScreen.route,
+                            modifier = Modifier.padding(it).fillMaxWidth()
                         ) {
-                            val meal = Gson().fromJson(it.arguments?.getString("id"), CharacterDisplay::class.java)
-                            CharacterDetailScreen(meal)
+                            composable(
+                                route = Screen.CharacterListScreen.route
+                            ) {
+                                CharacterListScreen(navController)
+                            }
+
+                            composable(
+                                route = Screen.FavoritesScreen.route
+                            ) {
+                                FavoritesScreen(navController)
+                            }
+
+                            composable(
+                                route = Screen.CharacterDetailScreen.route + "?id={id}",
+                                arguments = listOf(
+                                    navArgument("id") {
+                                        type = NavType.StringType
+                                    }
+                                )
+                            ) {
+                                val meal = Gson().fromJson(it.arguments?.getString("id"), CharacterDisplay::class.java)
+                                CharacterDetailScreen(meal)
+                            }
                         }
                     }
                 }

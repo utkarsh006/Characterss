@@ -1,11 +1,21 @@
 package com.example.characters.presentation.character_list
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -16,6 +26,7 @@ import com.example.characters.navigation.Screen
 import com.example.characters.presentation.character_list.components.CharacterListItem
 import com.example.characters.presentation.character_list.components.NoInternet
 import com.example.characters.presentation.character_list.components.SearchComponent
+import com.example.characters.presentation.character_list.components.SearchNotFoundUi
 import com.google.gson.Gson
 
 @Composable
@@ -47,16 +58,23 @@ fun CharacterListScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(displayedCharacters) { particularCharacter ->
-                    CharacterListItem(
-                        character = particularCharacter,
-                        onItemClicked = {
-                            val navMapper = Gson().toJson(particularCharacter)
-                            navController.navigate(
-                                Screen.CharacterDetailScreen.route + "?id=$navMapper"
-                            )
-                        }
-                    )
+                // Check if displayedCharacters is empty to show NoSearchUi
+                if (displayedCharacters.isEmpty() && searchText.isNotBlank()) {
+                    item {
+                        SearchNotFoundUi()
+                    }
+                } else {
+                    items(displayedCharacters) { particularCharacter ->
+                        CharacterListItem(
+                            character = particularCharacter,
+                            onItemClicked = {
+                                val navMapper = Gson().toJson(particularCharacter)
+                                navController.navigate(
+                                    Screen.CharacterDetailScreen.route + "?id=$navMapper"
+                                )
+                            }
+                        )
+                    }
                 }
 
                 // Displaying error message

@@ -1,4 +1,4 @@
-package com.example.characters.presentation
+package com.example.characters.presentation.character_list.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -15,15 +15,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.example.characters.presentation.character_list.components.TextComponent
 import com.example.crypto.R
 
-
 @Composable
-fun FavoritesScreen(
-    navController: NavController,
-) {
+fun SearchNotFoundUi(modifier: Modifier = Modifier) {
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -31,26 +27,21 @@ fun FavoritesScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        NoFavoritesUi()
+
+        Image(
+            painter = painterResource(id = R.drawable.ic_search_not_found),
+            contentDescription = "No Favorites Saved",
+            modifier = Modifier.size(200.dp)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        TextComponent(
+            text = "Character Not Found !!",
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 18f,
+            color = Color.Black,
+            padding = 8.dp
+        )
     }
-}
-
-@Composable
-fun NoFavoritesUi() {
-
-    Image(
-        painter = painterResource(id = R.drawable.ic_no_favs),
-        contentDescription = "No Favorites Saved",
-        modifier = Modifier.size(200.dp)
-    )
-
-    Spacer(modifier = Modifier.height(16.dp))
-
-    TextComponent(
-        text = "No Favorites Yet !!",
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 18f,
-        color = Color.Black,
-        padding = 8.dp
-    )
 }

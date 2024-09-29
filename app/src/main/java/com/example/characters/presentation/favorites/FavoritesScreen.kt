@@ -1,6 +1,5 @@
 package com.example.characters.presentation.favorites
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,6 +16,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +37,7 @@ fun FavoritesScreen(
     navController: NavController,
     viewModel: FavoritesViewModel = hiltViewModel()
 ) {
+    viewModel.getCharacters()
     val state = viewModel.favState.value
 
     Column(
@@ -45,8 +47,6 @@ fun FavoritesScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Log.d("#HOLA", state.toString())
-        Log.d("#DEBUG", state.favorites.toString())
         when {
             state.isLoading -> {
                 CircularProgressIndicator()
@@ -91,7 +91,6 @@ fun FavoriteCharacterItem(character: CharacterDisplay) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .background(Color.LightGray)
             .clickable { /* Handle click event */ },
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -103,16 +102,18 @@ fun FavoriteCharacterItem(character: CharacterDisplay) {
                 .height(150.dp)
         )
 
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(8.dp))
 
         TextComponent(
-            text = "No Favorites Yet !!",
+            text = character.name,
             fontWeight = FontWeight.Normal,
             fontSize = 12f,
             color = Color.Black,
             padding = 8.dp
         )
+
     }
+    HorizontalDivider()
 }
 
 @Composable

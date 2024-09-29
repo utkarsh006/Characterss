@@ -1,5 +1,6 @@
 package com.example.characters.presentation.character_list
 
+import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -31,6 +32,7 @@ import com.google.gson.Gson
 
 @Composable
 fun CharacterListScreen(
+    context: Context,
     navController: NavController,
     viewModel: CharacterListViewModel = hiltViewModel()
 ) {
@@ -66,6 +68,7 @@ fun CharacterListScreen(
                 } else {
                     items(displayedCharacters) { particularCharacter ->
                         CharacterListItem(
+                            context = context,
                             character = particularCharacter,
                             onItemClicked = {
                                 val navMapper = Gson().toJson(particularCharacter)

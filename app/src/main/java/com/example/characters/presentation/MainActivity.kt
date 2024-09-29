@@ -25,6 +25,7 @@ import com.example.characters.presentation.character_detail.CharacterDetailScree
 import com.example.characters.presentation.character_list.CharacterListScreen
 import com.example.characters.presentation.character_list.CharacterListViewModel
 import com.example.characters.presentation.character_list.components.NoInternet
+import com.example.characters.presentation.favorites.FavoritesScreen
 import com.example.characters.presentation.ui.MealTheme
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
@@ -75,7 +76,7 @@ class MainActivity : ComponentActivity() {
                                 modifier = Modifier.padding(paddingValues)
                             ) {
                                 composable(route = Screen.CharacterListScreen.route) {
-                                    CharacterListScreen(navController)
+                                    CharacterListScreen(applicationContext, navController)
                                 }
 
                                 composable(route = Screen.FavoritesScreen.route) {
@@ -92,7 +93,7 @@ class MainActivity : ComponentActivity() {
                                         backStackEntry.arguments?.getString("id"),
                                         CharacterDisplay::class.java
                                     )
-                                    CharacterDetailScreen(meal)
+                                    CharacterDetailScreen(applicationContext, meal)
                                 }
                             }
                         }

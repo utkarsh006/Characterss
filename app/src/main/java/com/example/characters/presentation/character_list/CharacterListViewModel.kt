@@ -3,7 +3,6 @@ package com.example.characters.presentation.character_list
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -11,7 +10,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.characters.common.Resource
 import com.example.characters.domain.model.CharacterDisplay
 import com.example.characters.domain.usecases.GetCharactersUseCase
-import com.example.characters.domain.usecases.SaveCharacter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -25,7 +23,6 @@ import javax.inject.Inject
 @HiltViewModel
 class CharacterListViewModel @Inject constructor(
     private val getCharactersUseCase: GetCharactersUseCase,
-    private val saveCharacter: SaveCharacter,
     private val application: Application
 ) : ViewModel() {
 
@@ -161,37 +158,4 @@ class CharacterListViewModel @Inject constructor(
         }
     }
 
-
-    fun saveCharacter(character: CharacterDisplay) {
-        //Log.d("#DEBUG", "SAVE CALLED")
-        viewModelScope.launch {
-            _state.value = CharacterListState(isLoading = true)
-
-            val result: Resource<Unit> = try {
-                //Log.d("#DEBUG1", "SAVED")
-                saveCharacter.invoke(character)
-                Resource.Success(Unit)
-
-            } catch (exception: Exception) {
-                Resource.Error("Failed to save character: ${exception.message}")
-            }
-
-            // Update the state based on the result
-            when (result) {
-                is Resource.Success -> {
-                    loadAllCharacters() // Load characters if save is successful
-                    _state.value = CharacterListState(isLoading = false) // Update loading state
-                }
-
-                is Resource.Error -> {
-                    _state.value = CharacterListState(
-                        isLoading = false,
-                        error = result.message ?: "Unknown error"
-                    )
-                }
-
-                is Resource.Loading -> TODO()
-            }
-        }
-    }
 }

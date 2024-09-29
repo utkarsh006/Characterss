@@ -1,5 +1,6 @@
 package com.example.characters.presentation.character_detail
 
+import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
@@ -15,10 +16,11 @@ import com.example.characters.presentation.character_list.components.TextCompone
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CharacterDetailScreen(
+    context: Context,
     character: CharacterDisplay
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
-        CharacterListItem(character = character, onItemClicked = {}, )
+        CharacterListItem(context, character = character, onItemClicked = {})
 
         Spacer(Modifier.height(4.dp))
 

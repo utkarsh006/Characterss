@@ -1,5 +1,7 @@
 package com.example.characters.presentation.character_list.components
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,12 +27,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.characters.domain.model.CharacterDisplay
 import com.example.characters.presentation.character_list.CharacterListViewModel
+import com.example.characters.presentation.favorites.FavoritesViewModel
 
 @Composable
 fun CharacterListItem(
+    context: Context,
     character: CharacterDisplay,
     onItemClicked: (CharacterDisplay) -> Unit,
-    viewModel: CharacterListViewModel = hiltViewModel()
+    viewModel: CharacterListViewModel = hiltViewModel(),
+    favoritesViewModel: FavoritesViewModel = hiltViewModel()
 ) {
     Card(
         modifier = Modifier
@@ -72,7 +77,8 @@ fun CharacterListItem(
                     )
 
                     IconButton(onClick = {
-                        viewModel.saveCharacter(character)
+                        favoritesViewModel.saveCharacter(character)
+                        Toast.makeText(context, "Added to Favorites", Toast.LENGTH_SHORT).show()
                     }) {
                         Icon(
                             imageVector = Icons.Default.FavoriteBorder,

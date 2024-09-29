@@ -3,6 +3,8 @@
 - This App displays the list of Characters along with their names and images.
 - User can click on a particular Character and see about that on the next screen.
 - An error screen is shown when no Internet connection is there.
+- Search characters by their names.
+- Saving your favorite characters.
 
 ### Concepts Used 
 

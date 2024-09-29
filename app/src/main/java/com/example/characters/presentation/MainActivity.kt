@@ -6,12 +6,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -22,6 +23,8 @@ import com.example.characters.navigation.BottomNavigationBar
 import com.example.characters.navigation.Screen
 import com.example.characters.presentation.character_detail.CharacterDetailScreen
 import com.example.characters.presentation.character_list.CharacterListScreen
+import com.example.characters.presentation.character_list.CharacterListViewModel
+import com.example.characters.presentation.character_list.components.NoInternet
 import com.example.characters.presentation.ui.MealTheme
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,53 +41,59 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    val items = listOf(
-                        Screen.CharacterListScreen,
-                        Screen.FavoritesScreen // Add Favorites Screen
-                    )
+                    val viewModel: CharacterListViewModel = hiltViewModel()
+                    val hasNetwork by viewModel.hasNetwork
+                    val isRetrying by viewModel.isRetrying
 
-                    Scaffold(
-                        bottomBar = {
-                            BottomNavigationBar(
-                                items = items,
-                                navController = navController,
-                                onItemClick = {
-                                    navController.navigate(it.route) {
-                                        // Ensures the user doesn't add duplicate destinations to the stack
-                                        popUpTo(navController.graph.startDestinationId)
-                                        launchSingleTop = true
-                                    }
-                                }
-                            )
+                    if (!hasNetwork) {
+                        NoInternet(isRetrying) {
+                            viewModel.retry()
                         }
-                    ) {
-                        NavHost(
-                            navController = navController,
-                            startDestination = Screen.CharacterListScreen.route,
-                            modifier = Modifier.padding(it).fillMaxWidth()
-                        ) {
-                            composable(
-                                route = Screen.CharacterListScreen.route
-                            ) {
-                                CharacterListScreen(navController)
-                            }
+                    } else {
+                        val items = listOf(
+                            Screen.CharacterListScreen,
+                            Screen.FavoritesScreen
+                        )
 
-                            composable(
-                                route = Screen.FavoritesScreen.route
-                            ) {
-                                FavoritesScreen(navController)
-                            }
-
-                            composable(
-                                route = Screen.CharacterDetailScreen.route + "?id={id}",
-                                arguments = listOf(
-                                    navArgument("id") {
-                                        type = NavType.StringType
+                        Scaffold(
+                            bottomBar = {
+                                BottomNavigationBar(
+                                    items = items,
+                                    navController = navController,
+                                    onItemClick = {
+                                        navController.navigate(it.route) {
+                                            popUpTo(navController.graph.startDestinationId)
+                                            launchSingleTop = true
+                                        }
                                     }
                                 )
+                            }
+                        ) { paddingValues ->
+                            NavHost(
+                                navController = navController,
+                                startDestination = Screen.CharacterListScreen.route,
+                                modifier = Modifier.padding(paddingValues)
                             ) {
-                                val meal = Gson().fromJson(it.arguments?.getString("id"), CharacterDisplay::class.java)
-                                CharacterDetailScreen(meal)
+                                composable(route = Screen.CharacterListScreen.route) {
+                                    CharacterListScreen(navController)
+                                }
+
+                                composable(route = Screen.FavoritesScreen.route) {
+                                    FavoritesScreen(navController)
+                                }
+
+                                composable(
+                                    route = Screen.CharacterDetailScreen.route + "?id={id}",
+                                    arguments = listOf(navArgument("id") {
+                                        type = NavType.StringType
+                                    })
+                                ) { backStackEntry ->
+                                    val meal = Gson().fromJson(
+                                        backStackEntry.arguments?.getString("id"),
+                                        CharacterDisplay::class.java
+                                    )
+                                    CharacterDetailScreen(meal)
+                                }
                             }
                         }
                     }

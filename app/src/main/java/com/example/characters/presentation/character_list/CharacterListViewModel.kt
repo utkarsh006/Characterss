@@ -63,11 +63,13 @@ class CharacterListViewModel @Inject constructor(
         _isRetrying.value = true
         viewModelScope.launch {
             delay(1000)
-            _hasNetwork.value = hasNetwork(application)
+            _hasNetwork.value = hasNetwork(application) // Check if connected
             if (_hasNetwork.value) {
-                getCharacters(lastSearchedCharacterName)
+                getCharacters(lastSearchedCharacterName) // Try fetching characters if connected
+            } else {
+                _state.value = CharacterListState(error = "Still no internet connection.")
             }
-            _isRetrying.value = false
+            _isRetrying.value = false // Reset retrying state
         }
     }
 

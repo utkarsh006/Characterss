@@ -14,7 +14,7 @@
 
 <details><summary><h3>Demo Video 📺 </h3></summary>
 
-https://github.com/user-attachments/assets/3b8fdaf1-9781-4d21-add0-5da803117931
+https://github.com/user-attachments/assets/03e3dd5a-5542-47cf-9ffc-fedd34f11b35
 
 </details>
 

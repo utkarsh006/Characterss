@@ -6,16 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.characters.common.Resource
 import com.example.characters.domain.model.CharacterDisplay
-import com.example.characters.domain.usecases.RemoveFavorites
-import com.example.characters.domain.usecases.SaveCharacter
+import com.example.characters.domain.usecases.AllUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
-    private val saveCharacter: SaveCharacter,
-    private val removeFavorites: RemoveFavorites
+    private val allUseCases: AllUseCases
 ) : ViewModel() {
 
     private val _favState = mutableStateOf(FavoritesState())
@@ -27,7 +25,7 @@ class FavoritesViewModel @Inject constructor(
 
     fun getCharacters() {
         viewModelScope.launch {
-            removeFavorites.fetch().collect { favorites ->
+            allUseCases.fetchCharacters.fetch().collect { favorites ->
                 _favState.value = _favState.value.copy(
                     favorites = favorites,
                     isLoading = false,
@@ -42,7 +40,7 @@ class FavoritesViewModel @Inject constructor(
             _favState.value = FavoritesState(isLoading = true)
 
             val result: Resource<Unit> = try {
-                saveCharacter.invoke(character)
+                allUseCases.saveCharacter.invoke(character)
                 Resource.Success(Unit)
             } catch (exception: Exception) {
                 Resource.Error("Failed to save character: ${exception.message}")
@@ -73,7 +71,7 @@ class FavoritesViewModel @Inject constructor(
             _favState.value = FavoritesState(isLoading = true)
 
             val result: Resource<Unit> = try {
-                removeFavorites.invoke(character)
+                allUseCases.removeFavorites.invoke(character)
                 Resource.Success(Unit)
             } catch (exception: Exception) {
                 Resource.Error("Failed to remove character: ${exception.message}")

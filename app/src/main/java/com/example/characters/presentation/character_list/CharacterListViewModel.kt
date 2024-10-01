@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.characters.common.Resource
 import com.example.characters.domain.model.CharacterDisplay
-import com.example.characters.domain.usecases.GetCharactersUseCase
+import com.example.characters.domain.usecases.AllUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CharacterListViewModel @Inject constructor(
-    private val getCharactersUseCase: GetCharactersUseCase,
+    private val allUseCases: AllUseCases,
     private val application: Application
 ) : ViewModel() {
 
@@ -89,7 +89,7 @@ class CharacterListViewModel @Inject constructor(
 
     private fun loadAllCharacters() {
         viewModelScope.launch {
-            getCharactersUseCase().onEach { result ->
+            allUseCases.getCharactersUseCase().onEach { result ->
                 when (result) {
                     is Resource.Success -> {
                         _state.value = CharacterListState(characters = result.data ?: emptyList())
@@ -110,10 +110,10 @@ class CharacterListViewModel @Inject constructor(
 
     private fun performSearch(characterName: String) {
         if (characterName.isNotEmpty()) {
-            getCharactersUseCase.setCityName(characterName)
+            allUseCases.getCharactersUseCase.setCityName(characterName)
         }
 
-        getCharactersUseCase().onEach { result ->
+        allUseCases.getCharactersUseCase().onEach { result ->
             when (result) {
                 is Resource.Success -> {
                     _state.value = CharacterListState(characters = result.data ?: emptyList())

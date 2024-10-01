@@ -2,7 +2,6 @@ package com.example.characters.domain.usecases
 
 import com.example.characters.domain.model.CharacterDisplay
 import com.example.characters.domain.repository.DbRepository
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class SaveCharacter @Inject constructor(private val repository: DbRepository) {
@@ -12,9 +11,5 @@ class SaveCharacter @Inject constructor(private val repository: DbRepository) {
         require(character.species.isNotBlank()) { "Character species cannot be blank" }
         require(character.gender.isNotBlank()) { "Character gender cannot be blank" }
         repository.insertFavItem(character)
-    }
-
-    fun fetch(): Flow<List<CharacterDisplay>> {
-        return repository.getItems()
     }
 }

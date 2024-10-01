@@ -1,34 +1,34 @@
 package com.example.characters.presentation.favorites
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import com.example.characters.domain.model.CharacterDisplay
 import com.example.characters.presentation.character_list.components.TextComponent
-import com.example.crypto.R
+import com.example.characters.presentation.favorites.components.FavoriteCharacterItem
+import com.example.characters.presentation.favorites.components.NoFavoritesUi
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun FavoritesScreen(
@@ -55,7 +55,7 @@ fun FavoritesScreen(
             }
 
             else -> {
-                FavoritesList(state.favorites)
+                FavoritesList(state.favorites, viewModel)
             }
         }
 
@@ -72,66 +72,49 @@ fun FavoritesScreen(
 }
 
 @Composable
-fun FavoritesList(favoriteCharacters: List<CharacterDisplay>) {
+fun FavoritesList(favoriteCharacters: List<CharacterDisplay>, viewModel: FavoritesViewModel) {
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Top
     ) {
         items(favoriteCharacters) { character ->
-            FavoriteCharacterItem(character)
+            val dismissState = rememberSwipeToDismissBoxState(
+                initialValue = SwipeToDismissBoxValue.Settled,
+                confirmValueChange = { dismissValue ->
+                    if (dismissValue == SwipeToDismissBoxValue.StartToEnd) {
+                        handleCharacterRemoval(character, viewModel, scope, context)
+                        true // Allow dismiss
+                    } else {
+                        false // Do not allow other dismiss actions
+                    }
+                }
+            )
+
+            SwipeToDismissBox(
+                state = dismissState,
+                modifier = Modifier.fillMaxWidth(),
+                backgroundContent = { },
+                content = { FavoriteCharacterItem(character) }
+            )
         }
     }
 }
 
-@Composable
-fun FavoriteCharacterItem(character: CharacterDisplay) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .clickable { /* Handle click event */ },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AsyncImage(
-            model = character.image,
-            contentDescription = character.name,
-            modifier = Modifier
-                .weight(1f)
-                .height(150.dp)
-        )
-
-        Spacer(modifier = Modifier.width(8.dp))
-
-        TextComponent(
-            text = character.name,
-            fontWeight = FontWeight.Normal,
-            fontSize = 12f,
-            color = Color.Black,
-            padding = 8.dp
-        )
-
+private fun handleCharacterRemoval(
+    character: CharacterDisplay,
+    viewModel: FavoritesViewModel,
+    scope: CoroutineScope,
+    context: Context
+) {
+    scope.launch {
+        try {
+            viewModel.removeCharacter(character)
+            Toast.makeText(context, "${character.name} removed from favorites", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(context, "Failed to remove ${character.name} from favorites", Toast.LENGTH_SHORT).show()
+        }
     }
-    HorizontalDivider()
-}
-
-@Composable
-fun NoFavoritesUi() {
-
-    Image(
-        painter = painterResource(id = R.drawable.ic_no_favs),
-        contentDescription = "No Favorites Saved",
-        modifier = Modifier.size(200.dp)
-    )
-
-    Spacer(modifier = Modifier.height(16.dp))
-
-    Spacer(modifier = Modifier.height(16.dp))
-
-    TextComponent(
-        text = "No Favorites Yet !!",
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 18f,
-        color = Color.Black,
-        padding = 8.dp
-    )
 }

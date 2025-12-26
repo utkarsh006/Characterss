@@ -13,7 +13,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.*
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.characters.presentation.character_list.CharacterListViewModel
+import com.example.characters.presentation.character_list.AnimeListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -21,7 +21,7 @@ fun SearchComponent(
     searchText: String,
     isSearching: Boolean,
     onSearchTextChange: (String) -> Unit,
-    viewModel: CharacterListViewModel = hiltViewModel()
+    viewModel: AnimeListViewModel = hiltViewModel()
 ) {
     var isExpanded by remember { mutableStateOf(isSearching) }
 

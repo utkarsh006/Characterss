@@ -1,7 +1,7 @@
 package com.example.characters.di
 
 import com.example.characters.common.Constants
-import com.example.characters.data.remote.CharacterApi
+import com.example.characters.data.remote.AnimeApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,11 +16,11 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideApi(): CharacterApi {
+    fun provideApi(): AnimeApi {
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(CharacterApi::class.java)
+            .create(AnimeApi::class.java)
     }
 }

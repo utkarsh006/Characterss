@@ -22,30 +22,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import com.example.characters.navigation.Screen
-import com.example.characters.presentation.character_list.components.CharacterListItem
+import com.example.characters.presentation.character_list.components.AnimeListItem
 import com.example.characters.presentation.character_list.components.NoInternet
 import com.example.characters.presentation.character_list.components.SearchComponent
 import com.example.characters.presentation.character_list.components.SearchNotFoundUi
-import com.google.gson.Gson
 
 @Composable
-fun CharacterListScreen(
+fun AnimeListScreen(
     context: Context,
-    navController: NavController,
-    viewModel: CharacterListViewModel = hiltViewModel()
+    viewModel: AnimeListViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
     val hasNetwork = viewModel.hasNetwork.value
     val isRetrying = viewModel.isRetrying.value
     val searchText by viewModel.searchText.collectAsState()
 
-    val displayedCharacters = remember(state.characters, searchText) {
+    val displayedAnime = remember(state.anime, searchText) {
         if (searchText.isBlank()) {
-            state.characters
+            state.anime
         } else {
-            viewModel.searchCharacter(state.characters)
+            viewModel.searchAnime(state.anime)
         }
     }
 
@@ -60,22 +56,16 @@ fun CharacterListScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             LazyColumn(modifier = Modifier.fillMaxSize()) {
-                // Check if displayedCharacters is empty to show NoSearchUi
-                if (displayedCharacters.isEmpty() && searchText.isNotBlank()) {
+                // Check if displayedAnime is empty to show NoSearchUi
+                if (displayedAnime.isEmpty() && searchText.isNotBlank()) {
                     item {
                         SearchNotFoundUi()
                     }
                 } else {
-                    items(displayedCharacters) { particularCharacter ->
-                        CharacterListItem(
+                    items(displayedAnime) { anime ->
+                        AnimeListItem(
                             context = context,
-                            character = particularCharacter,
-                            onItemClicked = {
-                                val navMapper = Gson().toJson(particularCharacter)
-                                navController.navigate(
-                                    Screen.CharacterDetailScreen.route + "?id=$navMapper"
-                                )
-                            }
+                            anime = anime
                         )
                     }
                 }

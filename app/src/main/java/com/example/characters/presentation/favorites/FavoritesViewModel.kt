@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.characters.common.Resource
-import com.example.characters.domain.model.CharacterDisplay
+import com.example.characters.domain.model.AnimeDisplay
 import com.example.characters.domain.usecases.AllUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -35,7 +35,7 @@ class FavoritesViewModel @Inject constructor(
         }
     }
 
-    fun saveCharacter(character: CharacterDisplay) {
+    fun saveCharacter(character: AnimeDisplay) {
         viewModelScope.launch {
             _favState.value = FavoritesState(isLoading = true)
 
@@ -66,7 +66,7 @@ class FavoritesViewModel @Inject constructor(
         }
     }
 
-    fun removeCharacter(character: CharacterDisplay) {
+    fun removeCharacter(character: AnimeDisplay) {
         viewModelScope.launch {
             _favState.value = FavoritesState(isLoading = true)
 

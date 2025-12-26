@@ -1,10 +1,10 @@
 package com.example.characters.di
 
-import com.example.characters.domain.repository.CharacterRepository
+import com.example.characters.domain.repository.AnimeRepository
 import com.example.characters.domain.repository.DbRepository
 import com.example.characters.domain.usecases.AllUseCases
 import com.example.characters.domain.usecases.FetchCharacters
-import com.example.characters.domain.usecases.GetCharactersUseCase
+import com.example.characters.domain.usecases.GetAnimeUseCase
 import com.example.characters.domain.usecases.RemoveFavorites
 import com.example.characters.domain.usecases.SaveCharacter
 import dagger.Module
@@ -22,11 +22,11 @@ object UseCaseModule {
     @Singleton
     fun provideAllUseCases(
         dbRepository: DbRepository,
-        characterRepo: CharacterRepository
+        animeRepo: AnimeRepository
     ): AllUseCases {
         return AllUseCases(
             fetchCharacters = FetchCharacters(dbRepository),
-            getCharactersUseCase = GetCharactersUseCase(characterRepo),
+            getAnimeUseCase = GetAnimeUseCase(animeRepo),
             removeFavorites = RemoveFavorites(dbRepository),
             saveCharacter = SaveCharacter(dbRepository)
         )

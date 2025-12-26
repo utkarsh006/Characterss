@@ -23,7 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.characters.domain.model.CharacterDisplay
+import com.example.characters.domain.model.AnimeDisplay
 import com.example.characters.presentation.character_list.components.TextComponent
 import com.example.characters.presentation.favorites.components.FavoriteCharacterItem
 import com.example.characters.presentation.favorites.components.NoFavoritesUi
@@ -72,7 +72,7 @@ fun FavoritesScreen(
 }
 
 @Composable
-fun FavoritesList(favoriteCharacters: List<CharacterDisplay>, viewModel: FavoritesViewModel) {
+fun FavoritesList(favoriteCharacters: List<AnimeDisplay>, viewModel: FavoritesViewModel) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
@@ -104,7 +104,7 @@ fun FavoritesList(favoriteCharacters: List<CharacterDisplay>, viewModel: Favorit
 }
 
 private fun handleCharacterRemoval(
-    character: CharacterDisplay,
+    character: AnimeDisplay,
     viewModel: FavoritesViewModel,
     scope: CoroutineScope,
     context: Context
@@ -112,9 +112,9 @@ private fun handleCharacterRemoval(
     scope.launch {
         try {
             viewModel.removeCharacter(character)
-            Toast.makeText(context, "${character.name} removed from favorites", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "${character.title} removed from favorites", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
-            Toast.makeText(context, "Failed to remove ${character.name} from favorites", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Failed to remove ${character.title} from favorites", Toast.LENGTH_SHORT).show()
         }
     }
 }

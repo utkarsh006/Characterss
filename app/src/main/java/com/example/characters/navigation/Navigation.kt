@@ -29,7 +29,7 @@ fun BottomNavigationBar(
                         badge = {}
                     ) {
                         // Display specific icon for the Discover screen, others use the provided icon
-                        if (screen == Screen.CharacterListScreen) {
+                        if (screen == Screen.AnimeListScreen) {
                             Icon(
                                 imageVector = Icons.Default.Home,
                                 contentDescription = "Discover Icon"

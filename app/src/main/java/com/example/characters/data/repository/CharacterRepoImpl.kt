@@ -1,17 +1,15 @@
 package com.example.characters.data.repository
 
-import com.example.characters.data.remote.CharacterApi
-import com.example.characters.data.remote.dto.ResultDTO
-import com.example.characters.domain.repository.CharacterRepository
+import com.example.characters.data.remote.AnimeApi
+import com.example.characters.data.remote.dto.AnimeDTO
+import com.example.characters.domain.repository.AnimeRepository
 import javax.inject.Inject
 
-class CharacterRepoImpl @Inject constructor(
-    private val api: CharacterApi
-) : CharacterRepository {
+class AnimeRepoImpl @Inject constructor(
+    private val api: AnimeApi
+) : AnimeRepository {
 
-    override suspend fun getCharacters(): List<ResultDTO> {
-        val response = api.getCharacters()
-        // Log.d("MyTag", response.toString())
-        return response.results
+    override suspend fun getTopAnime(): AnimeDTO {
+        return api.getTopAnime()
     }
 }

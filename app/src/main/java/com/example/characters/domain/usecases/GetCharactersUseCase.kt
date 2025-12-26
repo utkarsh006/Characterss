@@ -1,28 +1,22 @@
 package com.example.characters.domain.usecases
 
 import com.example.characters.common.Resource
-import com.example.characters.data.remote.dto.toCharacter
-import com.example.characters.domain.model.CharacterDisplay
-import com.example.characters.domain.repository.CharacterRepository
+import com.example.characters.data.remote.dto.toAnimeDisplay
+import com.example.characters.domain.model.AnimeDisplay
+import com.example.characters.domain.repository.AnimeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.IOException
 import javax.inject.Inject
 
-class GetCharactersUseCase @Inject constructor(
-    private val repository: CharacterRepository
+class GetAnimeUseCase @Inject constructor(
+    private val repository: AnimeRepository
 ) {
-    private var characterName: String ?= null
-
-    fun setCityName(_characterName: String){
-        this.characterName = _characterName
-    }
-
-    operator fun invoke(): Flow<Resource<List<CharacterDisplay>>> = flow {
+    operator fun invoke(): Flow<Resource<List<AnimeDisplay>>> = flow {
         try {
             emit(Resource.Loading())
-            val meals = repository.getCharacters().map { it.toCharacter() }
-            emit(Resource.Success(meals))
+            val animeList = repository.getTopAnime().data.map { it.toAnimeDisplay() }
+            emit(Resource.Success(animeList))
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "Unexpected Error Occurred"))
         } catch (e: IOException) {

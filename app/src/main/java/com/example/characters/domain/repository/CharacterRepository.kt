@@ -1,7 +1,7 @@
 package com.example.characters.domain.repository
 
-import com.example.characters.data.remote.dto.ResultDTO
+import com.example.characters.data.remote.dto.AnimeDTO
 
-interface CharacterRepository {
-    suspend fun getCharacters(): List<ResultDTO>
+interface AnimeRepository {
+    suspend fun getTopAnime(): AnimeDTO
 }

@@ -2,7 +2,6 @@ package com.example.characters.presentation.character_list.components
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,33 +25,32 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.example.characters.domain.model.CharacterDisplay
-import com.example.characters.presentation.character_list.CharacterListViewModel
+import com.example.characters.domain.model.AnimeDisplay
+import com.example.characters.presentation.character_list.AnimeListViewModel
 import com.example.characters.presentation.favorites.FavoritesViewModel
 
 @Composable
-fun CharacterListItem(
+fun AnimeListItem(
     context: Context,
-    character: CharacterDisplay,
-    onItemClicked: (CharacterDisplay) -> Unit,
-    viewModel: CharacterListViewModel = hiltViewModel(),
+    anime: AnimeDisplay,
+    viewModel: AnimeListViewModel = hiltViewModel(),
     favoritesViewModel: FavoritesViewModel = hiltViewModel()
 ) {
     val isFavorite = remember { mutableStateOf(false) }
 
-    // Observe favorites to check if the character is already saved
+    // Observe favorites to check if the anime is already saved
     LaunchedEffect(key1 = favoritesViewModel.favState.value.favorites) {
-        isFavorite.value = favoritesViewModel.favState.value.favorites.any { it.id == character.id }
+        isFavorite.value = favoritesViewModel.favState.value.favorites.any { it.id == anime.id }
     }
 
     Card(
         modifier = Modifier
             .padding(16.dp)
-            .fillMaxWidth()
-            .clickable { onItemClicked(character) },
+            .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
@@ -62,8 +60,8 @@ fun CharacterListItem(
         ) {
             // First Column: Image
             AsyncImage(
-                model = character.image,
-                contentDescription = character.name,
+                model = anime.imageUrl,
+                contentDescription = anime.title,
                 modifier = Modifier
                     .weight(1f)
                     .height(150.dp)
@@ -81,19 +79,38 @@ fun CharacterListItem(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(
-                        text = character.name,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.align(CenterVertically)
-                    )
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = anime.title,
+                            style = MaterialTheme.typography.bodyMedium,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        anime.episodes?.let {
+                            Text(
+                                text = "Episodes: $it",
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+
+                        anime.score?.let {
+                            Text(
+                                text = "Rating: ${String.format("%.1f", it)}/10",
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                    }
 
                     IconButton(onClick = {
                         if (isFavorite.value) {
-                            favoritesViewModel.removeCharacter(character)
+                            favoritesViewModel.removeCharacter(anime)
                             Toast.makeText(context, "Removed from Favorites", Toast.LENGTH_SHORT)
                                 .show()
                         } else {
-                            favoritesViewModel.saveCharacter(character)
+                            favoritesViewModel.saveCharacter(anime)
                             Toast.makeText(context, "Added to Favorites", Toast.LENGTH_SHORT).show()
                         }
                         isFavorite.value = !isFavorite.value
@@ -104,13 +121,6 @@ fun CharacterListItem(
                         )
                     }
                 }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "${character.gender} ● ${character.species} ● ${character.location.name}",
-                    style = MaterialTheme.typography.bodySmall
-                )
             }
         }
     }

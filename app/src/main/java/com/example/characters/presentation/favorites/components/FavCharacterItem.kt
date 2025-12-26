@@ -14,12 +14,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.characters.domain.model.CharacterDisplay
+import com.example.characters.domain.model.AnimeDisplay
 import com.example.characters.presentation.character_list.components.TextComponent
 
 
 @Composable
-fun FavoriteCharacterItem(character: CharacterDisplay) {
+fun FavoriteCharacterItem(character: AnimeDisplay) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -28,8 +28,8 @@ fun FavoriteCharacterItem(character: CharacterDisplay) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
-            model = character.image,
-            contentDescription = character.name,
+            model = character.imageUrl,
+            contentDescription = character.status,
             modifier = Modifier
                 .weight(1f)
                 .height(150.dp)
@@ -38,7 +38,7 @@ fun FavoriteCharacterItem(character: CharacterDisplay) {
         Spacer(modifier = Modifier.width(8.dp))
 
         TextComponent(
-            text = character.name,
+            text = character.title,
             fontWeight = FontWeight.Normal,
             fontSize = 12f,
             color = Color.Black,

@@ -2,14 +2,12 @@ package com.example.characters.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
-import com.example.characters.domain.model.CharacterDisplay
+import com.example.characters.domain.model.AnimeDisplay
 
 @Database(
-    entities = [CharacterDisplay::class],
+    entities = [AnimeDisplay::class],
     version = 1
 )
-@TypeConverters(Converters::class)
 abstract class CharacterDB : RoomDatabase() {
     abstract val characterDao: CharacterDao
 

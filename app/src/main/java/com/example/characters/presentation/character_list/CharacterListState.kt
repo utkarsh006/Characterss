@@ -1,9 +1,9 @@
 package com.example.characters.presentation.character_list
 
-import com.example.characters.domain.model.CharacterDisplay
+import com.example.characters.domain.model.AnimeDisplay
 
-data class CharacterListState(
+data class AnimeListState(
     val isLoading: Boolean = false,
-    val characters: List<CharacterDisplay> = emptyList(),
+    val anime: List<AnimeDisplay> = emptyList(),
     val error: String = ""
 )

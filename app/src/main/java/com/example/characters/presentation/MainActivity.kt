@@ -17,17 +17,13 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.example.characters.domain.model.CharacterDisplay
 import com.example.characters.navigation.BottomNavigationBar
 import com.example.characters.navigation.Screen
-import com.example.characters.presentation.character_detail.CharacterDetailScreen
-import com.example.characters.presentation.character_list.CharacterListScreen
-import com.example.characters.presentation.character_list.CharacterListViewModel
+import com.example.characters.presentation.character_list.AnimeListScreen
+import com.example.characters.presentation.character_list.AnimeListViewModel
 import com.example.characters.presentation.character_list.components.NoInternet
 import com.example.characters.presentation.favorites.FavoritesScreen
 import com.example.characters.presentation.ui.MealTheme
-import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -42,7 +38,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    val viewModel: CharacterListViewModel = hiltViewModel()
+                    val viewModel: AnimeListViewModel = hiltViewModel()
                     val hasNetwork by viewModel.hasNetwork
                     val isRetrying by viewModel.isRetrying
 
@@ -52,7 +48,7 @@ class MainActivity : ComponentActivity() {
                         }
                     } else {
                         val items = listOf(
-                            Screen.CharacterListScreen,
+                            Screen.AnimeListScreen,
                             Screen.FavoritesScreen
                         )
 
@@ -72,28 +68,15 @@ class MainActivity : ComponentActivity() {
                         ) { paddingValues ->
                             NavHost(
                                 navController = navController,
-                                startDestination = Screen.CharacterListScreen.route,
+                                startDestination = Screen.AnimeListScreen.route,
                                 modifier = Modifier.padding(paddingValues)
                             ) {
-                                composable(route = Screen.CharacterListScreen.route) {
-                                    CharacterListScreen(applicationContext, navController)
+                                composable(route = Screen.AnimeListScreen.route) {
+                                    AnimeListScreen(applicationContext)
                                 }
 
                                 composable(route = Screen.FavoritesScreen.route) {
                                     FavoritesScreen(navController)
-                                }
-
-                                composable(
-                                    route = Screen.CharacterDetailScreen.route + "?id={id}",
-                                    arguments = listOf(navArgument("id") {
-                                        type = NavType.StringType
-                                    })
-                                ) { backStackEntry ->
-                                    val meal = Gson().fromJson(
-                                        backStackEntry.arguments?.getString("id"),
-                                        CharacterDisplay::class.java
-                                    )
-                                    CharacterDetailScreen(applicationContext, meal)
                                 }
                             }
                         }

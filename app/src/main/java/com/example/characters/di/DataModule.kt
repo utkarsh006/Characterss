@@ -1,10 +1,10 @@
 package com.example.characters.di
 
 import com.example.characters.data.local.CharacterDB
-import com.example.characters.data.remote.CharacterApi
-import com.example.characters.data.repository.CharacterRepoImpl
+import com.example.characters.data.remote.AnimeApi
+import com.example.characters.data.repository.AnimeRepoImpl
 import com.example.characters.data.repository.DbRepoImpl
-import com.example.characters.domain.repository.CharacterRepository
+import com.example.characters.domain.repository.AnimeRepository
 import com.example.characters.domain.repository.DbRepository
 import dagger.Module
 import dagger.Provides
@@ -18,8 +18,8 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun provideCharacterRepository(characterApi: CharacterApi): CharacterRepository {
-        return CharacterRepoImpl(characterApi)
+    fun provideAnimeRepository(animeApi: AnimeApi): AnimeRepository {
+        return AnimeRepoImpl(animeApi)
     }
 
     @Provides

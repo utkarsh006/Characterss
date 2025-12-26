@@ -1,8 +1,8 @@
 package com.example.characters.common
 
 object Constants {
-    const val BASE_URL = "https://rickandmortyapi.com/"
-    const val CHARACTERS_API_ENDPOINT = "api/character"
+    const val BASE_URL = "https://api.jikan.moe/"
+    const val ANIME_API_ENDPOINT = "v4/top/anime"
 }
 
-// API Link : https://rickandmortyapi.com/api/character
+// API Link : https://api.jikan.moe/v4/top/anime

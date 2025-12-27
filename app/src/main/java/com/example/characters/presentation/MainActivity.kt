@@ -19,6 +19,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.characters.navigation.BottomNavigationBar
 import com.example.characters.navigation.Screen
+import com.example.characters.presentation.character_detail.AnimeDetailScreen
 import com.example.characters.presentation.character_list.AnimeListScreen
 import com.example.characters.presentation.character_list.AnimeListViewModel
 import com.example.characters.presentation.character_list.components.NoInternet
@@ -72,11 +73,22 @@ class MainActivity : ComponentActivity() {
                                 modifier = Modifier.padding(paddingValues)
                             ) {
                                 composable(route = Screen.AnimeListScreen.route) {
-                                    AnimeListScreen(applicationContext)
+                                    AnimeListScreen(applicationContext, navController)
                                 }
 
                                 composable(route = Screen.FavoritesScreen.route) {
                                     FavoritesScreen(navController)
+                                }
+
+                                composable(
+                                    route = Screen.AnimeDetailScreen.route,
+                                    arguments = listOf(
+                                        androidx.navigation.navArgument("animeId") {
+                                            type = NavType.IntType
+                                        }
+                                    )
+                                ) {
+                                    AnimeDetailScreen()
                                 }
                             }
                         }

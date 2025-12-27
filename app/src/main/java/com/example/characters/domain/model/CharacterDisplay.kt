@@ -26,3 +26,15 @@ data class AnimeDisplay(
         }
     }
 }
+
+data class AnimeDetail(
+    val id: Int,
+    val title: String,
+    val synopsis: String,
+    val genres: List<String>,
+    val episodes: Int,
+    val rating: String,
+    val trailerUrl: String?,
+    val posterImageUrl: String,
+    val mainCast: List<String>
+)

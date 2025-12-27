@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.characters.navigation.Screen
 import com.example.characters.presentation.character_list.components.AnimeListItem
 import com.example.characters.presentation.character_list.components.NoInternet
 import com.example.characters.presentation.character_list.components.SearchComponent
@@ -30,6 +31,7 @@ import com.example.characters.presentation.character_list.components.SearchNotFo
 @Composable
 fun AnimeListScreen(
     context: Context,
+    navController: androidx.navigation.NavController,
     viewModel: AnimeListViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
@@ -65,7 +67,10 @@ fun AnimeListScreen(
                     items(displayedAnime) { anime ->
                         AnimeListItem(
                             context = context,
-                            anime = anime
+                            anime = anime,
+                            onItemClick = { animeId ->
+                                navController.navigate(Screen.AnimeDetailScreen.createRoute(animeId))
+                            }
                         )
                     }
                 }

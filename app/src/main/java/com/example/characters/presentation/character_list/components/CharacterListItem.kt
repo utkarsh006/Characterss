@@ -2,6 +2,7 @@ package com.example.characters.presentation.character_list.components
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,7 +39,8 @@ fun AnimeListItem(
     context: Context,
     anime: AnimeDisplay,
     viewModel: AnimeListViewModel = hiltViewModel(),
-    favoritesViewModel: FavoritesViewModel = hiltViewModel()
+    favoritesViewModel: FavoritesViewModel = hiltViewModel(),
+    onItemClick: (Int) -> Unit = {}
 ) {
     val isFavorite = remember { mutableStateOf(false) }
 
@@ -50,7 +52,8 @@ fun AnimeListItem(
     Card(
         modifier = Modifier
             .padding(16.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable { onItemClick(anime.id) },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(

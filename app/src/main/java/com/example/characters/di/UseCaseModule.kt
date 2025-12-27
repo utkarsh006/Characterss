@@ -4,6 +4,7 @@ import com.example.characters.domain.repository.AnimeRepository
 import com.example.characters.domain.repository.DbRepository
 import com.example.characters.domain.usecases.AllUseCases
 import com.example.characters.domain.usecases.FetchCharacters
+import com.example.characters.domain.usecases.GetAnimeDetailsUseCase
 import com.example.characters.domain.usecases.GetAnimeUseCase
 import com.example.characters.domain.usecases.RemoveFavorites
 import com.example.characters.domain.usecases.SaveCharacter
@@ -27,6 +28,7 @@ object UseCaseModule {
         return AllUseCases(
             fetchCharacters = FetchCharacters(dbRepository),
             getAnimeUseCase = GetAnimeUseCase(animeRepo),
+            getAnimeDetailsUseCase = GetAnimeDetailsUseCase(animeRepo),
             removeFavorites = RemoveFavorites(dbRepository),
             saveCharacter = SaveCharacter(dbRepository)
         )

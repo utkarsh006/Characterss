@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.characters.domain.model.AnimeDisplay
+import com.example.characters.domain.model.CachedAnimeList
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -23,5 +24,15 @@ interface CharacterDao {
 
     @Delete
     suspend fun deleteItem(character: AnimeDisplay)
+
+    // Cache methods for anime list
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCachedAnimeList(cachedAnimeList: CachedAnimeList)
+
+    @Query("SELECT * FROM cached_anime_list WHERE id = 1")
+    suspend fun getCachedAnimeList(): CachedAnimeList?
+
+    @Query("DELETE FROM cached_anime_list WHERE id = 1")
+    suspend fun clearCachedAnimeList()
 
 }

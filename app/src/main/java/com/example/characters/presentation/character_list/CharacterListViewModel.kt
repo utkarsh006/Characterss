@@ -1,8 +1,5 @@
 package com.example.characters.presentation.character_list
 
-import android.app.Application
-import android.content.Context
-import android.net.ConnectivityManager
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -20,18 +17,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AnimeListViewModel @Inject constructor(
-    private val allUseCases: AllUseCases,
-    private val application: Application
+    private val allUseCases: AllUseCases
 ) : ViewModel() {
 
     private val _state = mutableStateOf(AnimeListState())
     val state: State<AnimeListState> get() = _state
 
-    private val _hasNetwork = mutableStateOf(true)
-    val hasNetwork: State<Boolean> get() = _hasNetwork
-
-    private val _isRetrying = mutableStateOf(false)
-    val isRetrying: State<Boolean> get() = _isRetrying
 
     private val _searchText = MutableStateFlow("")
     val searchText = _searchText.asStateFlow()
@@ -40,31 +31,9 @@ class AnimeListViewModel @Inject constructor(
     val isSearching = _isSearching.asStateFlow()
 
     init {
-        checkNetworkAndLoadData()
+        loadTopAnime()
     }
 
-    private fun checkNetworkAndLoadData() {
-        if (hasNetwork(application)) {
-            loadTopAnime()
-        } else {
-            _hasNetwork.value = false
-        }
-    }
-
-    fun retry() {
-        _isRetrying.value = true
-        viewModelScope.launch {
-            android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-                _hasNetwork.value = hasNetwork(application)
-                if (_hasNetwork.value) {
-                    loadTopAnime()
-                } else {
-                    _state.value = AnimeListState(error = "Still no internet connection.")
-                }
-                _isRetrying.value = false
-            }, 1000)
-        }
-    }
 
     private fun loadTopAnime() {
         viewModelScope.launch {
@@ -87,12 +56,6 @@ class AnimeListViewModel @Inject constructor(
         }
     }
 
-    private fun hasNetwork(context: Context): Boolean {
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetwork = connectivityManager.activeNetworkInfo
-        return activeNetwork?.isConnectedOrConnecting == true
-    }
 
     fun onSearchTextChange(text: String) {
         _searchText.value = text

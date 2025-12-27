@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.characters.navigation.Screen
 import com.example.characters.presentation.character_list.components.AnimeListItem
-import com.example.characters.presentation.character_list.components.NoInternet
 import com.example.characters.presentation.character_list.components.SearchComponent
 import com.example.characters.presentation.character_list.components.SearchNotFoundUi
 
@@ -35,8 +34,6 @@ fun AnimeListScreen(
     viewModel: AnimeListViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
-    val hasNetwork = viewModel.hasNetwork.value
-    val isRetrying = viewModel.isRetrying.value
     val searchText by viewModel.searchText.collectAsState()
 
     val displayedAnime = remember(state.anime, searchText) {
@@ -47,62 +44,55 @@ fun AnimeListScreen(
         }
     }
 
-    if (hasNetwork) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            SearchComponent(
-                searchText = searchText,
-                isSearching = viewModel.isSearching.collectAsState().value,
-                onSearchTextChange = { viewModel.onSearchTextChange(it) }
-            )
+    Column(modifier = Modifier.fillMaxSize()) {
+        SearchComponent(
+            searchText = searchText,
+            isSearching = viewModel.isSearching.collectAsState().value,
+            onSearchTextChange = { viewModel.onSearchTextChange(it) }
+        )
 
-            Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                // Check if displayedAnime is empty to show NoSearchUi
-                if (displayedAnime.isEmpty() && searchText.isNotBlank()) {
-                    item {
-                        SearchNotFoundUi()
-                    }
-                } else {
-                    items(displayedAnime) { anime ->
-                        AnimeListItem(
-                            context = context,
-                            anime = anime,
-                            onItemClick = { animeId ->
-                                navController.navigate(Screen.AnimeDetailScreen.createRoute(animeId))
-                            }
-                        )
-                    }
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            // Check if displayedAnime is empty to show NoSearchUi
+            if (displayedAnime.isEmpty() && searchText.isNotBlank()) {
+                item {
+                    SearchNotFoundUi()
                 }
-
-                // Displaying error message
-                if (state.error.isNotBlank()) {
-                    item {
-                        Text(
-                            text = state.error,
-                            color = MaterialTheme.colorScheme.error,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 20.dp)
-                        )
-                    }
-                }
-
-                // Loading indicator
-                if (state.isLoading) {
-                    item {
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            } else {
+                items(displayedAnime) { anime ->
+                    AnimeListItem(
+                        context = context,
+                        anime = anime,
+                        onItemClick = { animeId ->
+                            navController.navigate(Screen.AnimeDetailScreen.createRoute(animeId))
                         }
+                    )
+                }
+            }
+
+            // Displaying error message
+            if (state.error.isNotBlank()) {
+                item {
+                    Text(
+                        text = state.error,
+                        color = MaterialTheme.colorScheme.error,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp)
+                    )
+                }
+            }
+
+            // Loading indicator
+            if (state.isLoading) {
+                item {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                     }
                 }
             }
         }
-    } else {
-        NoInternet(
-            isRetrying = isRetrying,
-            onRetry = { viewModel.retry() }
-        )
     }
 }

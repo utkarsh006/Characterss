@@ -10,9 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,8 +19,6 @@ import com.example.characters.navigation.BottomNavigationBar
 import com.example.characters.navigation.Screen
 import com.example.characters.presentation.character_detail.AnimeDetailScreen
 import com.example.characters.presentation.character_list.AnimeListScreen
-import com.example.characters.presentation.character_list.AnimeListViewModel
-import com.example.characters.presentation.character_list.components.NoInternet
 import com.example.characters.presentation.favorites.FavoritesScreen
 import com.example.characters.presentation.ui.MealTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,57 +35,47 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    val viewModel: AnimeListViewModel = hiltViewModel()
-                    val hasNetwork by viewModel.hasNetwork
-                    val isRetrying by viewModel.isRetrying
+                    val items = listOf(
+                        Screen.AnimeListScreen,
+                        Screen.FavoritesScreen
+                    )
 
-                    if (!hasNetwork) {
-                        NoInternet(isRetrying) {
-                            viewModel.retry()
+                    Scaffold(
+                        bottomBar = {
+                            BottomNavigationBar(
+                                items = items,
+                                navController = navController,
+                                onItemClick = {
+                                    navController.navigate(it.route) {
+                                        popUpTo(navController.graph.startDestinationId)
+                                        launchSingleTop = true
+                                    }
+                                }
+                            )
                         }
-                    } else {
-                        val items = listOf(
-                            Screen.AnimeListScreen,
-                            Screen.FavoritesScreen
-                        )
+                    ) { paddingValues ->
+                        NavHost(
+                            navController = navController,
+                            startDestination = Screen.AnimeListScreen.route,
+                            modifier = Modifier.padding(paddingValues)
+                        ) {
+                            composable(route = Screen.AnimeListScreen.route) {
+                                AnimeListScreen(applicationContext, navController)
+                            }
 
-                        Scaffold(
-                            bottomBar = {
-                                BottomNavigationBar(
-                                    items = items,
-                                    navController = navController,
-                                    onItemClick = {
-                                        navController.navigate(it.route) {
-                                            popUpTo(navController.graph.startDestinationId)
-                                            launchSingleTop = true
-                                        }
+                            composable(route = Screen.FavoritesScreen.route) {
+                                FavoritesScreen(navController)
+                            }
+
+                            composable(
+                                route = Screen.AnimeDetailScreen.route,
+                                arguments = listOf(
+                                    androidx.navigation.navArgument("animeId") {
+                                        type = NavType.IntType
                                     }
                                 )
-                            }
-                        ) { paddingValues ->
-                            NavHost(
-                                navController = navController,
-                                startDestination = Screen.AnimeListScreen.route,
-                                modifier = Modifier.padding(paddingValues)
                             ) {
-                                composable(route = Screen.AnimeListScreen.route) {
-                                    AnimeListScreen(applicationContext, navController)
-                                }
-
-                                composable(route = Screen.FavoritesScreen.route) {
-                                    FavoritesScreen(navController)
-                                }
-
-                                composable(
-                                    route = Screen.AnimeDetailScreen.route,
-                                    arguments = listOf(
-                                        androidx.navigation.navArgument("animeId") {
-                                            type = NavType.IntType
-                                        }
-                                    )
-                                ) {
-                                    AnimeDetailScreen()
-                                }
+                                AnimeDetailScreen()
                             }
                         }
                     }

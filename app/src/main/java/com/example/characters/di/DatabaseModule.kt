@@ -20,6 +20,7 @@ object DatabaseModule {
             app,
             CharacterDB::class.java,
             CharacterDB.DB_NAME
-        ).build()
+        ).addMigrations(CharacterDB.MIGRATION_1_2)
+        .build()
     }
 }

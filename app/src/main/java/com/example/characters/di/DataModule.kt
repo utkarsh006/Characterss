@@ -18,8 +18,8 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun provideAnimeRepository(animeApi: AnimeApi): AnimeRepository {
-        return AnimeRepoImpl(animeApi)
+    fun provideAnimeRepository(animeApi: AnimeApi, db: CharacterDB): AnimeRepository {
+        return AnimeRepoImpl(animeApi, db.characterDao)
     }
 
     @Provides

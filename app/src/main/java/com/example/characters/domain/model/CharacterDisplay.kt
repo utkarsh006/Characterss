@@ -2,6 +2,7 @@ package com.example.characters.domain.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.Date
 
 @Entity
 data class AnimeDisplay(
@@ -26,6 +27,14 @@ data class AnimeDisplay(
         }
     }
 }
+
+@Entity(tableName = "cached_anime_list")
+data class CachedAnimeList(
+    @PrimaryKey
+    val id: Int = 1, // Single row for the entire list
+    val animeListJson: String, // JSON string of the anime list
+    val lastUpdated: Long = System.currentTimeMillis() // Timestamp of last update
+)
 
 data class AnimeDetail(
     val id: Int,

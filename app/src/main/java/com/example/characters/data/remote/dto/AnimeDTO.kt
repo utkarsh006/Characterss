@@ -1,5 +1,7 @@
 package com.example.characters.data.remote.dto
 
+import com.example.characters.domain.model.AnimeDisplay
+
 data class AnimeDTO(
     val `data`: List<Data>,
     val pagination: Pagination
@@ -167,8 +169,8 @@ data class AnimeDTO(
     }
 }
 
-fun AnimeDTO.Data.toAnimeDisplay(): com.example.characters.domain.model.AnimeDisplay {
-    return com.example.characters.domain.model.AnimeDisplay(
+fun AnimeDTO.Data.toAnimeDisplay(): AnimeDisplay {
+    return AnimeDisplay(
         id = mal_id,
         title = title,
         episodes = episodes,

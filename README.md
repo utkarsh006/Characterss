@@ -18,6 +18,7 @@ A modern Android application built with **MVVM Clean Architecture** that provide
 - **Navigation**: Jetpack Navigation with bottom navigation
 - **Image Loading**: Coil for efficient image handling
 - **API Integration**: Retrofit with OkHttp for network calls
+- **Shared Components**: Centralized `AppText` component for consistent typography
 
 ### 📺  Demo Video : For convenience, the APK has been uploaded to the repository.
 <br>
@@ -28,11 +29,14 @@ A modern Android application built with **MVVM Clean Architecture** that provide
 
 ```
 📁 app/src/main/java/com/example/characters/
-├── 📁 data/
-│   ├── 📁 local/                    # Local Database Layer
+├── 📁 common/                      # Shared Constants & Utilities
+│   ├── Constants.kt                # App-wide Constants
+│   └── Resource.kt                 # Resource Management
+├── 📁 data/                        # Data Layer
+│   ├── 📁 local/                   # Local Database Layer
 │   │   ├── CharacterDB.kt          # Room Database Configuration
 │   │   └── CharacterDao.kt         # Data Access Objects
-│   ├── 📁 remote/                   # Remote API Layer
+│   ├── 📁 remote/                  # Remote API Layer
 │   │   ├── CharacterApi.kt         # Retrofit API Interface
 │   │   └── 📁 dto/                 # Data Transfer Objects
 │   │       ├── AnimeDTO.kt         # API Response Models
@@ -53,9 +57,11 @@ A modern Android application built with **MVVM Clean Architecture** that provide
 │   │   └── DbRepository.kt         # Database Repository Contract
 │   └── 📁 usecases/                # Business Use Cases
 │       ├── AllUseCases.kt          # Use Case Collection
-│       ├── GetCharactersUseCase.kt # Main Anime Fetching Logic
+│       ├── FetchCharacters.kt      # Fetch Characters Logic
 │       ├── GetAnimeDetailsUseCase.kt # Anime Details Logic
-│       └── [Other Use Cases]       # Favorites, Search, etc.
+│       ├── GetCharactersUseCase.kt # Main Anime Fetching Logic
+│       ├── RemoveFavorites.kt      # Remove Favorites Logic
+│       └── SaveCharacter.kt        # Save Character Logic
 ├── 📁 navigation/                  # Navigation Layer
 │   ├── AppNavHost.kt               # Navigation Graph
 │   ├── AppRoot.kt                  # Main App Composable
@@ -66,24 +72,32 @@ A modern Android application built with **MVVM Clean Architecture** that provide
 │   ├── 📁 character_detail/        # Anime Detail Screen
 │   │   ├── AnimeDetailState.kt     # Detail View State
 │   │   ├── AnimeDetailViewModel.kt # Detail ViewModel
-│   │   └── CharacterDetailScreen.kt # Detail Screen UI
+│   │   ├── CharacterDetailScreen.kt # Detail Screen UI
+│   │   └── 📁 components/          # Shared UI Components
+│   │       ├── AppText.kt          # Centralized Text Component
+│   │       ├── MediaSection.kt     # Media Display Component
+│   │       ├── NoMediaPlaceholder.kt # No Media Placeholder
+│   │       ├── PosterImage.kt      # Poster Image Component
+│   │       └── TrailerView.kt      # Trailer Video Component
 │   ├── 📁 character_list/          # Anime List Screen
 │   │   ├── CharacterListScreen.kt  # List Screen UI
 │   │   ├── CharacterListState.kt   # List View State
 │   │   ├── CharacterListViewModel.kt # List ViewModel
 │   │   └── 📁 components/          # Reusable UI Components
 │   │       ├── CharacterListItem.kt # List Item Component
-│   │       ├── SearchComponent.kt  # Search Bar
-│   │       └── [Other Components]  # Text, Loading, etc.
+│   │       ├── SearchComponent.kt  # Search Bar Component
+│   │       └── SearchNotFoundUi.kt # Search Not Found UI
 │   ├── 📁 favorites/               # Favorites Screen
 │   │   ├── FavoritesScreen.kt      # Favorites UI
 │   │   ├── FavoritesState.kt       # Favorites State
 │   │   ├── FavoritesViewModel.kt   # Favorites ViewModel
 │   │   └── 📁 components/          # Favorites Components
+│   │       ├── FavCharacterItem.kt # Favorite Character Item
+│   │       └── NoFavoritesUi.kt    # No Favorites UI Component
 │   └── 📁 ui/                      # UI Theme & Design
-│       ├── Theme.kt                # App Theme
 │       ├── Color.kt                # Color Palette
-│       ├── Type.kt                 # Typography
+│       ├── Theme.kt                # App Theme
+│       ├── Type.kt                 # Typography Definitions
 │       └── Shapes.kt               # Shape Definitions
 └── 📄 CharacterApplication.kt      # Hilt Application Class
 ```
@@ -95,6 +109,7 @@ A modern Android application built with **MVVM Clean Architecture** that provide
 - **Dependency Injection**: Hilt manages object creation and injection
 - **Repository Pattern**: Single source of truth for data operations
 - **Offline-First**: Cache-first strategy with background sync
+- **Component Architecture**: Shared, reusable UI components with centralized styling
 
 ## 📋 Assumptions Made
 
@@ -104,6 +119,11 @@ A modern Android application built with **MVVM Clean Architecture** that provide
 - **Device**: Modern Android devices with Compose support
 - **Storage**: Adequate local storage for caching
 
+
+### ✅ Recent Improvements
+- **Centralized Text Component**: `AppText` component with `TextType` enum for consistent typography across the app
+- **Component Architecture**: Shared reusable components in dedicated component folders
+- **Code Quality**: Refactored screens to follow standard best practices.
 
 ### Future Improvements
 - **Pagination**: Currently loads single page of results

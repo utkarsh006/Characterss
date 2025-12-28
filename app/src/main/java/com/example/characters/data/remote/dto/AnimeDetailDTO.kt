@@ -151,16 +151,16 @@ data class AnimeDetailDTO(
 fun AnimeDetailDTO.Data.toAnimeDetail(): AnimeDetail {
     return AnimeDetail(
         id = mal_id,
-        title = title.takeIf { !it.isNullOrBlank() } ?: "Unknown Title",
+        title = title.takeIf { it.isNotBlank() } ?: "Unknown Title",
         synopsis = synopsis.takeIf { !it.isNullOrBlank() } ?: "No synopsis available.",
-        genres = genres.mapNotNull { it.name.takeIf { name -> !name.isNullOrBlank() } },
+        genres = genres.mapNotNull { it.name.takeIf { name -> name.isNotBlank() } },
         episodes = episodes,
         rating = String.format("%.1f", score),
-        trailerUrl = trailer.embed_url.takeIf { !it.isNullOrBlank() },
-        posterImageUrl = images.jpg.large_image_url.takeIf { !it.isNullOrBlank() }
-            ?: images.jpg.image_url.takeIf { !it.isNullOrBlank() }
-            ?: images.webp.large_image_url.takeIf { !it.isNullOrBlank() }
-            ?: images.webp.image_url.takeIf { !it.isNullOrBlank() }
+        trailerUrl = trailer.embed_url.takeIf { it.isNotBlank() },
+        posterImageUrl = images.jpg.large_image_url.takeIf { it.isNotBlank() }
+            ?: images.jpg.image_url.takeIf { it.isNotBlank() }
+            ?: images.webp.large_image_url.takeIf { it.isNotBlank() }
+            ?: images.webp.image_url.takeIf { it.isNotBlank() }
             ?: "",
         mainCast = emptyList() // Characters data not available in current DTO structure
     )

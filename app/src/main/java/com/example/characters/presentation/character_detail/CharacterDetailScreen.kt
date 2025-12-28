@@ -1,7 +1,11 @@
 package com.example.characters.presentation.character_detail
 
+import android.util.Log
+import android.view.ViewGroup
+import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,18 +16,23 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.characters.domain.model.AnimeDetail
 
 @Composable
@@ -37,6 +46,7 @@ fun AnimeDetailScreen(
             state.isLoading -> {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
+
             state.error.isNotBlank() -> {
                 Text(
                     text = state.error,
@@ -48,6 +58,7 @@ fun AnimeDetailScreen(
                         .align(Alignment.Center)
                 )
             }
+
             state.animeDetail != null -> {
                 AnimeDetailContent(state.animeDetail)
             }
@@ -65,39 +76,116 @@ private fun AnimeDetailContent(animeDetail: AnimeDetail) {
     ) {
         // Video Player or Poster Image
         item {
-            if (!animeDetail.trailerUrl.isNullOrBlank()) {
-                AndroidView(
-                    factory = { context ->
-                        WebView(context).apply {
-                            settings.javaScriptEnabled = true
-                            settings.domStorageEnabled = true
-                            webViewClient = WebViewClient()
-                            loadUrl(animeDetail.trailerUrl!!)
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(250.dp)
-                )
-            } else if (animeDetail.posterImageUrl.isNotBlank()) {
-                AsyncImage(
-                    model = animeDetail.posterImageUrl,
-                    contentDescription = "Anime Poster",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(250.dp)
-                )
-            } else {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(250.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "No poster available",
-                        style = MaterialTheme.typography.bodyLarge
+            Log.d("AnimeDetail", "Trailer URL: ${animeDetail.trailerUrl}")
+            Log.d("AnimeDetail", "Poster URL: ${animeDetail.posterImageUrl}")
+
+            when {
+                !animeDetail.trailerUrl.isNullOrBlank() -> {
+                    Log.d("AnimeDetail", "Loading WebView with URL: ${animeDetail.trailerUrl}")
+
+                    // Use Box with fixed height to force WebView to render
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(250.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                    ) {
+                        AndroidView(
+                            factory = { context ->
+                                WebView(context).apply {
+                                    layoutParams = ViewGroup.LayoutParams(
+                                        ViewGroup.LayoutParams.MATCH_PARENT,
+                                        ViewGroup.LayoutParams.MATCH_PARENT
+                                    )
+                                    settings.apply {
+                                        javaScriptEnabled = true
+                                        domStorageEnabled = true
+                                        databaseEnabled = true
+                                        mediaPlaybackRequiresUserGesture = false
+                                        loadWithOverviewMode = true
+                                        useWideViewPort = true
+                                        setSupportZoom(false)
+                                        allowFileAccess = true
+                                        allowContentAccess = true
+                                        mixedContentMode =
+                                            android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+                                    }
+                                    webViewClient = object : WebViewClient() {
+                                        override fun onPageFinished(view: WebView?, url: String?) {
+                                            super.onPageFinished(view, url)
+                                            Log.d("AnimeDetail", "WebView page loaded: $url")
+                                        }
+
+                                        override fun onReceivedError(
+                                            view: WebView?,
+                                            errorCode: Int,
+                                            description: String?,
+                                            failingUrl: String?
+                                        ) {
+                                            super.onReceivedError(
+                                                view,
+                                                errorCode,
+                                                description,
+                                                failingUrl
+                                            )
+                                            Log.e("AnimeDetail", "WebView error: $description")
+                                        }
+                                    }
+                                    webChromeClient = WebChromeClient()
+                                }
+                            },
+                            update = { webView ->
+                                webView.loadUrl(animeDetail.trailerUrl)
+                            },
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                }
+
+                animeDetail.posterImageUrl.isNotBlank() -> {
+                    Log.d("AnimeDetail", "Loading Image with URL: ${animeDetail.posterImageUrl}")
+
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(animeDetail.posterImageUrl)
+                            .crossfade(true)
+                            .listener(
+                                onSuccess = { _, _ ->
+                                    Log.d("AnimeDetail", "Image loaded successfully")
+                                },
+                                onError = { _, result ->
+                                    Log.e(
+                                        "AnimeDetail",
+                                        "Image load error: ${result.throwable.message}"
+                                    )
+                                }
+                            )
+                            .build(),
+                        contentDescription = "Anime Poster",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(250.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
                     )
+                }
+
+                else -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(250.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "No media available",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
             }
         }

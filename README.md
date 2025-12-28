@@ -1,10 +1,10 @@
-### CHARACTERS APP
+### CHARACTERS APP (Anime Edition)
 - This Project is built using **Android Jetpack** with **MVVM Clean Architecture**.
-- This App displays the list of Characters along with their names and images.
-- User can click on a particular Character and see about that on the next screen.
-- An error screen is shown when no Internet connection is there.
-- Search characters by their names.
-- Saving your favorite characters.
+- This App displays the list of Anime along with their names, images, episodes, and ratings.
+- User can click on a particular Anime and see detailed information including synopsis, genres, and trailer.
+- **Offline-first approach**: App works seamlessly without internet using cached data.
+- Search anime by their names with real-time filtering.
+- Save your favorite anime to local database and manage your collection.
 
 ### Concepts Used 
 

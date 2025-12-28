@@ -11,7 +11,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.characters.presentation.character_list.components.TextComponent
-import com.example.crypto.R
+import com.example.characters.R
 
 @Composable
 fun NoFavoritesUi() {

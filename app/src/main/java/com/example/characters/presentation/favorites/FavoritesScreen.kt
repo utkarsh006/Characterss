@@ -17,14 +17,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.characters.domain.model.AnimeDisplay
-import com.example.characters.presentation.character_list.components.TextComponent
+import com.example.characters.presentation.character_detail.components.AppText
+import com.example.characters.presentation.character_detail.components.TextType
 import com.example.characters.presentation.favorites.components.FavoriteCharacterItem
 import com.example.characters.presentation.favorites.components.NoFavoritesUi
 import kotlinx.coroutines.CoroutineScope
@@ -60,12 +59,10 @@ fun FavoritesScreen(
         }
 
         if (state.error.isNotEmpty()) {
-            TextComponent(
+            AppText(
                 text = state.error,
-                fontWeight = FontWeight.Normal,
-                fontSize = 18f,
-                color = Color.Black,
-                padding = 8.dp
+                type = TextType.ERROR,
+                modifier = Modifier.padding(8.dp)
             )
         }
     }

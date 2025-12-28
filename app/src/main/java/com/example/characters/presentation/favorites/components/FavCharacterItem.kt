@@ -10,12 +10,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.characters.domain.model.AnimeDisplay
-import com.example.characters.presentation.character_list.components.TextComponent
+import com.example.characters.presentation.character_detail.components.AppText
+import com.example.characters.presentation.character_detail.components.TextType
 
 
 @Composable
@@ -37,12 +36,10 @@ fun FavoriteCharacterItem(character: AnimeDisplay) {
 
         Spacer(modifier = Modifier.width(8.dp))
 
-        TextComponent(
+        AppText(
             text = character.title,
-            fontWeight = FontWeight.Normal,
-            fontSize = 12f,
-            color = Color.Black,
-            padding = 8.dp
+            type = TextType.BODY,
+            modifier = Modifier.padding(8.dp)
         )
 
     }

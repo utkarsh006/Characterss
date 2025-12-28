@@ -19,6 +19,7 @@ A modern Android application built with **MVVM Clean Architecture** that provide
 - **Image Loading**: Coil for efficient image handling
 - **API Integration**: Retrofit with OkHttp for network calls
 - **Shared Components**: Centralized `AppText` component for consistent typography
+- **Utility Extensions**: `ViewExtensions` for reusable UI utilities (toasts, etc.)
 
 ### 📺  Demo Video : For convenience, the APK has been uploaded to the repository.
 <br>

@@ -1,7 +1,6 @@
 package com.example.characters.presentation.character_list.components
 
 import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,6 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.example.characters.common.ViewExtensions.showToast
 import com.example.characters.domain.model.AnimeDisplay
 import com.example.characters.presentation.character_list.AnimeListViewModel
 import com.example.characters.presentation.favorites.FavoritesViewModel
@@ -109,11 +109,10 @@ fun AnimeListItem(
                     IconButton(onClick = {
                         if (isFavorite.value) {
                             favoritesViewModel.removeCharacter(anime)
-                            Toast.makeText(context, "Removed from Favorites", Toast.LENGTH_SHORT)
-                                .show()
+                            showToast(context, "Removed from Favorites")
                         } else {
                             favoritesViewModel.saveCharacter(anime)
-                            Toast.makeText(context, "Added to Favorites", Toast.LENGTH_SHORT).show()
+                            showToast(context, "Added to Favorites")
                         }
                         isFavorite.value = !isFavorite.value
                     }) {

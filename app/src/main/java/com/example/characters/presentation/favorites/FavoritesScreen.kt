@@ -1,7 +1,6 @@
 package com.example.characters.presentation.favorites
 
 import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.characters.common.ViewExtensions.showToast
 import com.example.characters.domain.model.AnimeDisplay
 import com.example.characters.presentation.character_detail.components.AppText
 import com.example.characters.presentation.character_detail.components.TextType
@@ -109,9 +109,9 @@ private fun handleCharacterRemoval(
     scope.launch {
         try {
             viewModel.removeCharacter(character)
-            Toast.makeText(context, "${character.title} removed from favorites", Toast.LENGTH_SHORT).show()
+            showToast(context, "${character.title} removed from favorites")
         } catch (e: Exception) {
-            Toast.makeText(context, "Failed to remove ${character.title} from favorites", Toast.LENGTH_SHORT).show()
+            showToast(context, "Failed to remove ${character.title} from favorites")
         }
     }
 }
